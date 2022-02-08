@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  >
+
+  <!-- to enable overflow menu with icons we have to do like below -->
+  <item
+    android:id="@+id/action_more"
+    android:title=""
+    android:icon="@drawable/ic_baseline_notes_24"
+    app:showAsAction="always">
+
+    <menu>
+
+      <item
+        android:id="@+id/action_product"
+        android:icon="@drawable/ic_baseline_event_note_24"
+        android:title="@string/product" />
+      <item
+        android:id="@+id/action_download"
+        android:icon="@drawable/ic_baseline_download_24"
+        android:title="@string/download" />
+      <item
+        android:id="@+id/action_pricing"
+        android:icon="@drawable/ic_baseline_price_change_24"
+        android:title="@string/pricing" />
+    </menu>
+  </item>
+
+</menu>
