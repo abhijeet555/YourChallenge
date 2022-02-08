@@ -22,7 +22,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.assignment.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.model.PeopleBean;
 import com.model.PeopleDetailsBean;
 
 import com.utils.DataRequest;
@@ -49,9 +48,8 @@ public class HomeActivity extends AppCompatActivity {
   RequestQueue requestQueue;
 
   List<PeopleDetailsBean> peopleDetailsBeanList;
-  List<PeopleBean> peopleBeanList;
 
-  List<PeopleDetailsBean> imagesArrayList;
+  static int count = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +69,8 @@ public class HomeActivity extends AppCompatActivity {
     requestQueue = Volley.newRequestQueue(this);
 
     peopleDetailsBeanList = new ArrayList<>();
-    peopleBeanList = new ArrayList<>();
-    imagesArrayList = new ArrayList<>();
 
-
-    peopleDetailsList();
+    peopleDetailsList(count);
   }
 
 
@@ -85,7 +80,7 @@ public class HomeActivity extends AppCompatActivity {
     return true;
   }
 
-  private void peopleDetailsList() {
+  private void peopleDetailsList(int count) {
     DataRequest dataRequest = new DataRequest(Request.Method.GET, NetworkAPI.BASE_URL, null, response -> {
 
       Gson gson = new Gson();
@@ -95,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
       try {
         peopleDetailsBeanList = gson.fromJson(response.getJSONArray("results").toString(), listType);
 
-        showPeopleDetailsList(peopleDetailsBeanList);
+        showPeopleDetailsList(peopleDetailsBeanList,count);
 
       } catch (JSONException e) {
         e.printStackTrace();
@@ -110,36 +105,13 @@ public class HomeActivity extends AppCompatActivity {
   }
 
 
- /* private void peopleList() {
-    DataRequest dataRequest = new DataRequest(Request.Method.GET, NetworkAPI.BASE_URL, null, response -> {
-
-      Gson gson = new Gson();
-      Type listType = new TypeToken<List<PeopleBean>>() {
-      }.getType();
-
-      try {
-        peopleBeanList = gson.fromJson(response.getJSONArray("results").toString(), listType);
-
-        showPeopleList(peopleBeanList);
-
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
-
-      System.out.println(response.toString());
-    }, error -> {
-
-    });
-
-    requestQueue.add(dataRequest);
-  }*/
-
-  private void showPeopleDetailsList(List<PeopleDetailsBean> peopleDetailsList) {
+  private void showPeopleDetailsList(List<PeopleDetailsBean> peopleDetailsList,int count) {
 
     showPeopleList(peopleDetailsList,0);
 
     ProductDetailsPagerAdapter productDetailsPagerAdapter = new ProductDetailsPagerAdapter(this, peopleDetailsList);
     productDetailsViewpager.setAdapter(productDetailsPagerAdapter);
+    productDetailsViewpager.setCurrentItem(count);
     productDetailsViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
       public void onPageScrolled(int i, float v, int i1) {
@@ -148,8 +120,6 @@ public class HomeActivity extends AppCompatActivity {
 
       @Override
       public void onPageSelected(int i) {
-        // addBottomDots(i);
-
         showPeopleList(peopleDetailsList,i);
       }
 
@@ -170,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
     rightImageView.setOnClickListener(v -> {
       int currentItem = productDetailsViewpager.getCurrentItem();
 
-      if ((currentItem + 1) < imagesArrayList.size()) {
+      if ((currentItem + 1) < peopleDetailsList.size()) {
         productDetailsViewpager.setCurrentItem(currentItem + 1);
       }
     });
@@ -181,10 +151,7 @@ public class HomeActivity extends AppCompatActivity {
 
   private void showPeopleList(List<PeopleDetailsBean> peopleList,int count) {
 
-
     linearLayout.removeAllViews();
-
-    System.out.println(count+"ccccccccccccccccccccccccoooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuu");
 
     for (int i = 0; i < peopleList.size(); i++) {
 
@@ -225,8 +192,9 @@ public class HomeActivity extends AppCompatActivity {
         layout.setBackgroundResource(R.color.white);
       }
 
+      int finalI = i;
       layout.setOnClickListener(v -> {
-       // showPeopleDetailsList(peopleList,i);
+        showPeopleDetailsList(peopleList, finalI);
       });
 
       linearLayout.addView(productView);
